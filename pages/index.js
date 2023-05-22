@@ -47,12 +47,12 @@ export default function Login() {
                 <Box sx={{display: 'flex', justifyContent: 'center', mt: 10}} >
                         <Box>
                             <form ref={formReference}>
-                            <Box  sx={{display: 'flex', justifyContent: 'center', flexDirection: 'column', p: 5}}>
-                                <Typography color="secondary" variant="h2">Log in</Typography>
-                                <TextField InputProps={inputProps} sx={{width: 400}} name="email" label="Enter Your Email" variant="standard" />
-                                <TextField InputProps={inputProps} sx={{width: 400}}  name="userPassword" label="Password" type="password" variant="standard" />
-                                <Button variant="contained" color="secondary" onClick={()=> loginUser()}>Sign In</Button>
-                            </Box>
+                                <Box sx={{display: 'flex', justifyContent: 'center', flexDirection: 'column', p: 5}}>
+                                    <Typography color="secondary" variant="h2">Log in</Typography>
+                                    <TextField InputProps={inputProps} sx={{width: 400}} name="email" label="Enter Your Email" variant="standard" />
+                                    <TextField InputProps={inputProps} sx={{width: 400}}  name="userPassword" label="Password" type="password" variant="standard" />
+                                    <Button variant="contained" color="secondary" onClick={()=> loginUser()}>Sign In</Button>
+                                </Box>
                             </form>
                         </Box>
                 </Box>

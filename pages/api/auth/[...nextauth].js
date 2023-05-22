@@ -11,27 +11,27 @@ export default NextAuth({
       credentials: {username: {label: 'username',type: 'text'},
       password: { label: 'password', type: 'password' }},
       async authorize(credentials) {
-          const { userName, userPassword } = credentials;
-          const userNameToBeVerified = userName;
+          const { email, userPassword } = credentials;
+          const emailToBeVerified = email;
           const userPasswordToBeVerified = userPassword;
-          let userType = "user";
-          let passwordHash = await prisma.user.findUnique({
+          let passwordHash = await prisma.user.findMany({
             where: {
-              username: userNameToBeVerified,
+              email: emailToBeVerified,
             },
             select: {
                password: true,
+               type: true
             }
           });
 
           if(passwordHash === null) {
             passwordHash = ""; //just setting it to something so doesn't cause error
           }
-          
-          const passwordCorrect = await bcrypt.compare(userPassword, passwordHash.password);
+
+          const passwordCorrect = await bcrypt.compare(userPassword, passwordHash[0].password);
 
           if(passwordCorrect) {
-            return {username: userNameToBeVerified, userCategory: userType};
+            return {email: emailToBeVerified, userCategory: passwordHash[0].type};
           }else{
             return null;
           }
@@ -50,7 +50,7 @@ export default NextAuth({
     },
   },
   pages: {
-    signIn: "/login",  
+    signIn: "/",  
   },
   secret: process.env.JWT_SECRET,
 })

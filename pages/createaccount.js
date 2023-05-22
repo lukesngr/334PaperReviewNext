@@ -1,14 +1,19 @@
-import {Box, Card, Typography, TextField, Button, FormControl, InputLabel, Select, MenuItem} from "@mui/material"
+import {Box, Typography, TextField, Button, FormControl, InputLabel, Select, MenuItem} from "@mui/material"
 import {useRef, useState} from "react"
 import axios from "axios"
+import {NotSignedInNavbar} from '../components/navbar/NotSignedInNavbar'
 
 export default function CreateAccount() {
+
+    const formReference = useRef()
+    const [userType, setUserType] = useState('0');
 
     async function createNewUser(){
         const { userEmail, userPassword} = formReference.current;
         const email = userEmail.value;
         const password = userPassword.value;
-        const type = userType;
+        const typeList = ["Conference Chair", "Reviewers", "Authors", "Admin"]
+        const type = typeList[userType];
 
         try {
             const req = await axios.post("/api/createUserInDB", {email, password, type});
@@ -23,44 +28,36 @@ export default function CreateAccount() {
         
     }
 
-    const formReference = useRef()
-    const [userType, setUserType] = useState('1');
+
     const handleChange = (event) => { setUserType(event.target.value); console.log(event.target.value); };
 
     return (
         <>
-            <GlobalStyles styles={{body: { margin: 0 }}}/>
+            <NotSignedInNavbar></NotSignedInNavbar>
             <Box sx={{display: 'flex', justifyContent: 'center', my: 10}} >
-                    <Card>
-                        <Box>
-                            <form ref={formReference}>
-                                <Box  sx={{display: 'flex', justifyContent: 'center', flexDirection: 'column', p: 5}}>
-                                    <Typography variant="h4">Create account</Typography>
-                                    <TextField fullWidth={true} name="userEmail" id="standard-basic" label="Email" variant="standard" />
-                                    <TextField fullWidth={true} name="userPassword" id="standard-password-input" label="Password" type="password" variant="standard" />     
-                                    <Box>
-                                                <FormControl fullWidth>
-                                                <InputLabel>User Type</InputLabel>
-                                                <Select
-                                                    id="user-type"
-                                                    value={userType}
-                                                    name="userType"
-                                                    onChange={handleChange}
-                                                    >
-                                                    <MenuItem value={1}>Conference Chair</MenuItem>
-                                                    <MenuItem value={2}>Reviewers</MenuItem>
-                                                    <MenuItem value={3}>Authors</MenuItem>
-                                                    <MenuItem value={4}>Admin</MenuItem>
-                                                </Select>
-                                                </FormControl>
-                                            </Box>
-                                    <Button fullWidth={true} variant="contained" color="primary" onClick={()=> createNewUser()}>Create</Button>  
-                                </Box>
-                            </form>
+                <Box>
+                    <form ref={formReference}>
+                        <Box  sx={{display: 'flex', justifyContent: 'center', flexDirection: 'column', p: 5}}>
+                            <Typography color="secondary" variant="h2">Create account</Typography>
+                            <TextField  sx={{width: 400}} name="userEmail" id="standard-basic" label="Email" variant="standard" />
+                            <TextField  sx={{width: 400, mb: 2}} name="userPassword" id="standard-password-input" label="Password" type="password" variant="standard" />     
+                            <Box>
+                                <FormControl fullWidth>
+                                    <InputLabel>User Type</InputLabel>
+                                    <Select id="user-type" value={userType} name="userType"onChange={handleChange}>
+                                        <MenuItem value={0}>Conference Chair</MenuItem>
+                                        <MenuItem value={1}>Reviewers</MenuItem>
+                                        <MenuItem value={2}>Authors</MenuItem>
+                                        <MenuItem value={3}>Admin</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Box>
+                            <Button sx={{width: 400}} variant="contained" color="secondary" onClick={()=> createNewUser()}>Create</Button>  
                         </Box>
-                    </Card>
+                    </form>
                 </Box>
-            </>
+            </Box>
+        </>
         
     );
 }

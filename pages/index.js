@@ -5,6 +5,7 @@ import {NotSignedInNavbar} from '../components/navbar/NotSignedInNavbar'
 import { useSession } from 'next-auth/react'
 import { AuthorHomePage } from "../components/homepages/AuthorHomePage";
 import { signOut } from "next-auth/react";
+import { ReviewerHomePage } from "../components/homepages/ReviewerHomePage";
 
 
 export default function Login() {
@@ -31,7 +32,10 @@ export default function Login() {
     if(status == "authenticated") {
         if(session.user.userCategory == "Authors") {
             return <AuthorHomePage email={session.user.email}></AuthorHomePage>
-        }else{
+        }else if(session.user.userCategory == "Reviewers"){
+            return <ReviewerHomePage email={session.user.email}></ReviewerHomePage>
+        }
+        else{
             return (<>
                         <Typography color="secondary" variant="h2">{session.user.userCategory}</Typography>
                         <Button variant="contained" onClick={signOut}>Yo</Button>

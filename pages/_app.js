@@ -1,6 +1,10 @@
 import {SessionProvider} from 'next-auth/react'
 import { ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
+const queryClient = new QueryClient()
 
 const theme = createTheme({
   palette: {
@@ -16,11 +20,14 @@ const theme = createTheme({
 
 function MyApp({Component, pageProps: {session, ... pageProps}}) {
     return (
+      <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
             <SessionProvider>
                 <Component {... pageProps}></Component>
             </SessionProvider>
+            <ReactQueryDevtools />
         </ThemeProvider>
+      </QueryClientProvider>
     )
 }
 

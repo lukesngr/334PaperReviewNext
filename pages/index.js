@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react'
 import { AuthorHomePage } from "../components/homepages/AuthorHomePage";
 import { signOut } from "next-auth/react";
 import { ReviewerHomePage } from "../components/homepages/ReviewerHomePage";
+import { ConferenceHomePage } from "../components/homepages/ConferenceHomePage";
 
 
 export default function Login() {
@@ -34,8 +35,9 @@ export default function Login() {
             return <AuthorHomePage email={session.user.email}></AuthorHomePage>
         }else if(session.user.userCategory == "Reviewers"){
             return <ReviewerHomePage email={session.user.email}></ReviewerHomePage>
-        }
-        else{
+        }else if(session.user.userCategory == "Conference Chair") {
+            return <ConferenceHomePage email={session.user.email}></ConferenceHomePage>
+        }else{
             return (<>
                         <Typography color="secondary" variant="h2">{session.user.userCategory}</Typography>
                         <Button variant="contained" onClick={signOut}>Yo</Button>

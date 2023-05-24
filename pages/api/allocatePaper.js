@@ -6,22 +6,15 @@ export default async(req, res) => {
     try{
         let result = "";
         
-        result = await mydb.user.updateMany({
+        result = await mydb.paper.updateMany({
             where: {
-                email: data.reviewerEmail
+                id: data.paperID
             },
             data: {
-                preferredNumberOfPapers: data.preferredNumber
+                reviewer: data.reviewerEmail
             }
         })
 
-        delete data.preferredNumber;
-        
-        result += await mydb.bids.create({
-            data: {
-                ...data,
-            },
-        });
         
         res.status(200).json(result);
     }catch (error){   

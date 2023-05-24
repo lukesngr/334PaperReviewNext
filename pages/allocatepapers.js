@@ -5,17 +5,15 @@ import { useSession } from 'next-auth/react';
 import {Card, Stack} from '@mui/material';
 import Router from 'next/router';
 import { useQuery } from '@tanstack/react-query';
-import { SignedInReviewNavbar } from "../components/navbar/SignedInReviewNavbar";
+import { SignedInConferenceNavbar } from "../components/navbar/SignedInConferenceNavbar";
 
-function BidPapers(props) {
+function AllocatePapers(props) {
     
     let papers = [];
-    const inputProps = { 'underline': 'primary' };
-    const [numberOfPapers, setNumberOfPapers] = useState(2)
     const { status: getStatus, error, data: papersData} = useQuery({
-        queryKey: ['paperReviewers'],
+        queryKey: ['paperAllocators'],
         queryFn: () => {
-            return axios.get('http://localhost:3000/api/getPapersForReviewers', {params: {email: props.email}}).then(res => res.data).catch(error => console.log(error));
+            return axios.get('http://localhost:3000/api/getBidsForConference').then(res => res.data).catch(error => console.log(error));
         }
     })
     if(getStatus === "success") {
@@ -24,9 +22,9 @@ function BidPapers(props) {
         console.log(error);
     }
 
-    async function bidForPaper(id) {
+    async function allocatePapers(id, reviewerEmail) {
         try {
-            let result = await axios.post('/api/bidForPaper', {paper: {connect: {id: id}}, reviewerEmail: props.email, preferredNumber: numberOfPapers});
+            let result = await axios.post('/api/allocatePaper', {reviewerEmail: reviewerEmail, paperID: id});
 
             if(result.status == 200) {
                 console.log('Success');
@@ -35,25 +33,32 @@ function BidPapers(props) {
             console.log(error);
         }
     }
+    console.log(papers)
 
     return (
         <>
-            <SignedInReviewNavbar></SignedInReviewNavbar>
+            <SignedInConferenceNavbar></SignedInConferenceNavbar>
             <Box sx={{display: 'flex', justifyContent: 'center'}} >
                 <Card sx={{p: 5, my: 10}}>
-                    <Typography variant="h5">Available Papers</Typography>
-                    <TextField InputProps={inputProps} sx={{width: 400, mb: 5}} label="Select Number Of Papers" variant="standard" value={numberOfPapers} onChange={e => setNumberOfPapers(e.value)}/>
+                    <Typography variant="h4">Papers to Allocate</Typography>
                     <Stack direction="column">
                         {papers.map(paper => (
+                        <>
                             <Stack direction="row">
-                                <Box sx={{border: 1, borderColor: '#0FA597', width: 400}}>
+                                <Box sx={{border: 1, borderColor: '#0FA597', width: 400, p: 2}}>
                                     <Typography variant="h5">{paper.title} by {paper.authorEmail}</Typography>
                                     <Typography variant="h5">{paper.description}</Typography>
                                 </Box>
-                                <Box sx={{border: 1, borderColor: '#0FA597'}}>
-                                    <Button variant="contained" onClick={() => bidForPaper(paper.id)} sx={{m: 3}}>Bid</Button>
-                                </Box>  
                             </Stack>
+                            <Box sx={{border: 1, borderColor: '#0FA597', width: 400, display: 'flex', flexDirection: 'row', p: 2}}>
+                                {paper.Bids.map(bid => (
+                                    <>
+                                        <Typography variant="h6">Bidder: {bid.reviewerEmail} with preferred number of papers: {bid.preferredNumbers}</Typography>
+                                        <Button variant="contained" onClick={() => allocatePapers(paper.id, bid.reviewerEmail)}>Allocate</Button>
+                                    </>
+                                ))} 
+                            </Box>
+                        </>
                         ))}
                     </Stack>
                 </Card>
@@ -66,8 +71,8 @@ export default function bidPapers() {
     const {data: session, status } = useSession();
 
     if(status == "authenticated") {
-        if(session.user.userCategory == "Reviewers") {
-            return <BidPapers email={session.user.email}></BidPapers>
+        if(session.user.userCategory == "Conference Chair") {
+            return <AllocatePapers email={session.user.email}></AllocatePapers>
         }
     }else if(status == "loading") {
         return <Typography variant="h3">Loading...</Typography>

@@ -15,7 +15,7 @@ export default function SubmitPapers() {
         const titleToBeSent = title.value;
         const descriptionToBeSent = description.value;
         try {
-            const res = await axios.post('/api/submitPaper', {title: titleToBeSent, description: descriptionToBeSent, authorName: session.user.email});
+            const res = await axios.post('/api/submitPaper', {title: titleToBeSent, description: descriptionToBeSent, authorEmail: session.user.email});
             if(res.status == 200) {
                 console.log('Success')
             }

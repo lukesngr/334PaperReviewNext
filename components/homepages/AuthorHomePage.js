@@ -1,5 +1,7 @@
-import { Typography, Box } from "@mui/material";
+import { Typography, Box, FormControl, Select, InputLabel, MenuItem } from "@mui/material";
 import { SignedInAuthNavbar } from "../navbar/SignedInAuthNavbar";
+import { useState } from "react";
+import axios from "axios";
 
 export function AuthorHomePage(props) {
     const [numberOfPapers, setNumberOfPapers] = useState(2);
@@ -28,13 +30,13 @@ export function AuthorHomePage(props) {
                         <Typography variant="h5">Click on Submitted Papers navbar item above to view papers</Typography>
                         <Typography variant="h5">Click on Submit Papers navbar item above to submit papers</Typography>
                         <Box>
-                                <FormControl>
+                                <FormControl color="secondary">
                                     <InputLabel>Preferred Number Of Pages</InputLabel>
-                                    <Select id="user-type" value={numberOfPapers} name="userType"onChange={(event) => setPreferredPages(event.target.value)}>
-                                        <MenuItem value={0}>Conference Chair</MenuItem>
-                                        <MenuItem value={1}>Reviewers</MenuItem>
-                                        <MenuItem value={2}>Authors</MenuItem>
-                                        <MenuItem value={3}>Admin</MenuItem>
+                                    <Select id="user-type" value={numberOfPapers}  sx={{borderColor: 'secondary'}} name="userType"onChange={(event) => setPreferredPages(event.target.value)}>
+                                        <MenuItem value={1}>1</MenuItem>
+                                        <MenuItem value={2}>2</MenuItem>
+                                        <MenuItem value={3}>3</MenuItem>
+                                        <MenuItem value={4}>4</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Box>

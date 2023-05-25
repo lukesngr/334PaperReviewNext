@@ -1,14 +1,20 @@
-import {Box, Typography, TextField, Button, FormControl, InputLabel, Select, MenuItem} from "@mui/material"
-import {useRef, useState} from "react"
 import axios from "axios"
 import { useSession } from 'next-auth/react';
 import {Card, Stack} from '@mui/material';
 import Router from 'next/router';
 import { useQuery } from '@tanstack/react-query';
-import { SignedInConferenceNavbar } from "../components/navbar/SignedInConferenceNavbar";
+import { SignedInConferenceNavbar } from "../../components/navbar/SignedInConferenceNavbar";
+import { useRouter } from 'next/router';
+ 
+export default function Page() {
+  
+  return <p>Post: {}</p>;
+}
 
-function AllocatePapers(props) {
+function viewDataForPaperConference(props) {
     
+    const router = useRouter();
+    router.query.paperID
     let papers = [];
     const { status: getStatus, error, data: papersData} = useQuery({
         queryKey: ['paperAllocators'],

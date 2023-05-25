@@ -18,8 +18,7 @@ export function SignedInConferenceNavbar() {
                 <Toolbar sx={{pl:0 }}>
                     <Grid container spacing={1}>
                         <Grid item md={1} xs={1}><Link variant="h5" color="secondary" underline="none" href="/">Home</Link></Grid>
-                        <Grid item md={2} xs={1}><Link variant="h5" color="secondary" underline="none" href="/allocatepapers">Allocate Papers</Link></Grid>
-                        <Grid item md={2} xs={1}><Link variant="h5" color="secondary" underline="none" href="/">Decide on Paper</Link></Grid>
+                        <Grid item md={2} xs={1}><Link variant="h5" color="secondary" underline="none" href="/viewpapers">View Papers</Link></Grid>
                         <Grid item md={2} onClick={handleMenuOpen}>
                             <IconButton color="secondary">
                                 <AccountCircleIcon></AccountCircleIcon>

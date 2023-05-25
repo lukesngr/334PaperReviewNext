@@ -11,7 +11,8 @@ export default async(req, res) => {
                 id: data.paperID
             },
             data: {
-                reviewer: data.reviewerEmail
+                reviewer: data.reviewerEmail,
+                status: "Allocated"
             }
         })
 

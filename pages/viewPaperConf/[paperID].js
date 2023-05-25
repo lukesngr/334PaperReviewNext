@@ -1,36 +1,32 @@
 import axios from "axios"
 import { useSession } from 'next-auth/react';
-import {Card, Stack} from '@mui/material';
+import {Card, Stack, Typography, Box, Button} from '@mui/material';
 import Router from 'next/router';
 import { useQuery } from '@tanstack/react-query';
 import { SignedInConferenceNavbar } from "../../components/navbar/SignedInConferenceNavbar";
 import { useRouter } from 'next/router';
  
-export default function Page() {
-  
-  return <p>Post: {}</p>;
-}
-
-function viewDataForPaperConference(props) {
+function ViewDataForPaperConference(props) {
     
     const router = useRouter();
-    router.query.paperID
-    let papers = [];
+    
+    let paperData = [];
     const { status: getStatus, error, data: papersData} = useQuery({
-        queryKey: ['paperAllocators'],
+        queryKey: ['paperConference'],
         queryFn: () => {
-            return axios.get('http://localhost:3000/api/getBidsForConference').then(res => res.data).catch(error => console.log(error));
+            return axios.get('http://localhost:3000/api/getPaperForConference', {params: {paperID: router.query.paperID}}).then(res => res.data).catch(error => console.log(error));
         }
     })
     if(getStatus === "success") {
-        papers = papersData;
+        paperData = papersData;
     }else if(getStatus === "error") {
         console.log(error);
     }
 
-    async function allocatePapers(id, reviewerEmail) {
+
+    async function allocatePaper(id) {
         try {
-            let result = await axios.post('/api/allocatePaper', {reviewerEmail: reviewerEmail, paperID: id});
+            let result = await axios.post('/api/allocatePaper', {reviewerEmail: props.email, paperID: id});
 
             if(result.status == 200) {
                 console.log('Success');
@@ -39,46 +35,45 @@ function viewDataForPaperConference(props) {
             console.log(error);
         }
     }
-    console.log(papers)
 
     return (
         <>
             <SignedInConferenceNavbar></SignedInConferenceNavbar>
             <Box sx={{display: 'flex', justifyContent: 'center'}} >
-                <Card sx={{p: 5, my: 10}}>
-                    <Typography variant="h4">Papers to Allocate</Typography>
-                    <Stack direction="column">
-                        {papers.map(paper => (
+                <Stack direction="column" sx={{p: 5, my: 10}}>
+                    {paperData.map(paper => (
                         <>
                             <Stack direction="row">
-                                <Box sx={{border: 1, borderColor: '#0FA597', width: 400, p: 2}}>
-                                    <Typography variant="h5">{paper.title} by {paper.authorEmail}</Typography>
-                                    <Typography variant="h5">{paper.description}</Typography>
+                                <Box sx={{border: 1, borderColor: '#0FA597', width: 400, borderRadius: 1, p: 2}}>
+                                    <Typography variant="h5" color="secondary">{paper.title}</Typography>
+                                </Box>
+                                <Box sx={{border: 1, borderColor: '#0FA597', width: 400, borderRadius: 1, p: 2}}>
+                                    <Stack direction="column">
+                                        <Typography variant="h5" color="seconday">Authors</Typography>
+                                        <Typography variant="p" color="#8192AA">{paper.authorEmail}</Typography>
+                                    </Stack>
                                 </Box>
                             </Stack>
-                            <Box sx={{border: 1, borderColor: '#0FA597', width: 400, display: 'flex', flexDirection: 'row', p: 2}}>
-                                {paper.Bids.map(bid => (
-                                    <>
-                                        <Typography variant="h6">Bidder: {bid.reviewerEmail} with preferred number of papers: {bid.preferredNumbers}</Typography>
-                                        <Button variant="contained" onClick={() => allocatePapers(paper.id, bid.reviewerEmail)}>Allocate</Button>
-                                    </>
-                                ))} 
+                            <Box sx={{border: 1, borderColor: '#0FA597', width: 804, borderRadius: 1, p: 2}}>
+                                <Typography variant="p" color="#8192AA">{paper.description}</Typography>
+                            </Box>
+                            <Box sx={{display: "flex", justifyContent: "center"}}>
+                                {paper.status == "Not Allocated" && <Button width={400} variant="contained" color="secondary" onClick={() => allocatePaper(paper.id)}>Allocate Paper</Button>}
                             </Box>
                         </>
-                        ))}
-                    </Stack>
-                </Card>
+                    ))}
+                </Stack>
             </Box>
         </>
     )
 }
 
-export default function bidPapers() {
+export default function viewDataForPaperConference() {
     const {data: session, status } = useSession();
 
     if(status == "authenticated") {
         if(session.user.userCategory == "Conference Chair") {
-            return <AllocatePapers email={session.user.email}></AllocatePapers>
+            return <ViewDataForPaperConference email={session.user.email}></ViewDataForPaperConference>
         }
     }else if(status == "loading") {
         return <Typography variant="h3">Loading...</Typography>

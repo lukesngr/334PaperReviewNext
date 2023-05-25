@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useSession } from 'next-auth/react';
-import { Typography, Box, Stack } from "@mui/material";
+import { Typography, Box, Stack, Link } from "@mui/material";
 import { useQuery } from '@tanstack/react-query';
 import { SignedInConferenceNavbar } from "../components/navbar/SignedInConferenceNavbar";
 
@@ -28,7 +28,7 @@ function ViewPapers(props) {
                     <>
                         <Stack direction="row">
                             <Box sx={{border: 1, borderColor: '#0FA597', width: 800, borderRadius: 5, p: 2}}>
-                                <Typography variant="h5" color="secondary">{paper.title}</Typography>
+                                <Typography variant="h5" color="secondary"><Link href={"/viewPaperConf/"+paper.id} underline="none" color="inherit">{paper.title}</Link></Typography>
                                 <Typography variant="p" color="#8192AA">{paper.description}</Typography>
                             </Box>
                             <Box sx={{border: 1, borderColor: '#0FA597', width: 400, borderRadius: 5, p: 2}}>

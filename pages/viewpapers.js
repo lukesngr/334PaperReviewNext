@@ -8,7 +8,7 @@ function ViewPapers(props) {
     
     let papers = [];
     const { status: getStatus, error, data: papersData} = useQuery({
-        queryKey: ['paperAllocators'],
+        queryKey: ['papersToView'],
         queryFn: () => {
             return axios.get('http://localhost:3000/api/getPapersForConference').then(res => res.data).catch(error => console.log(error));
         }

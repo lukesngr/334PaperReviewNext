@@ -4,7 +4,6 @@ export default async(req, res) => {
     let data = req.query;
     try {
         const papers = await mydb.paper.findMany({
-            where: {reviewer: null},
             select: {
                 id: true,
                 title: true,

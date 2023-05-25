@@ -18,8 +18,7 @@ export function SignedInReviewNavbar() {
                 <Toolbar sx={{pl:0 }}>
                     <Grid container spacing={1}>
                         <Grid item md={1} xs={1}><Link variant="h5" color="secondary" underline="none" href="/">Home</Link></Grid>
-                        <Grid item md={2} xs={1}><Link variant="h5" color="secondary" underline="none" href="/bidpapers">Bid on Papers</Link></Grid>
-                        <Grid item md={8} xs={1}><Link variant="h5" color="secondary" underline="none" href="/reviewpapers">Review Papers</Link></Grid>
+                        <Grid item md={10} xs={1}><Link variant="h5" color="secondary" underline="none" href="/bidandreviewpapers">Bid and Review</Link></Grid>
                         <Grid item md={1} onClick={handleMenuOpen}>
                             <IconButton color="secondary">
                                 <AccountCircleIcon></AccountCircleIcon>

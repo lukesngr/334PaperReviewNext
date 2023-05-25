@@ -8,7 +8,8 @@ export default async(req, res) => {
                 id: true,
                 authorEmail: true,
                 title: true,
-                description: true
+                description: true,
+                status: true
             }
         });
 

@@ -13,7 +13,7 @@ export default async(req, res) => {
                 status: true,
                 Bids: {
                     select: {
-                        paperID: true,
+                        id: true,
                         reviewerEmail: true
                     }
                 }

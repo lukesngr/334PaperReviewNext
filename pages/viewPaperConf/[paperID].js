@@ -1,10 +1,12 @@
 import axios from "axios"
 import { useSession } from 'next-auth/react';
-import {Card, Stack, Typography, Box, Button} from '@mui/material';
+import {Card, Stack, Typography, Box, Button, Modal, FormControl, InputLabel, Select, MenuItem} from '@mui/material';
 import Router from 'next/router';
 import { useQuery } from '@tanstack/react-query';
 import { SignedInConferenceNavbar } from "../../components/navbar/SignedInConferenceNavbar";
 import { useRouter } from 'next/router';
+import { useState } from "react";
+import { ViewReviews } from "../../components/ViewReviews";
  
 function ViewDataForPaperConference(props) {
     
@@ -36,6 +38,33 @@ function ViewDataForPaperConference(props) {
         }
     }
 
+    async function acceptPaper(id) {
+        try {
+            let result = await axios.post('/api/acceptPaper', {paperID: id});
+
+            if(result.status == 200) {
+                console.log('Success');
+            }
+        }catch(error) {
+            console.log(error);
+        }
+    }
+
+    async function rejectPaper(id) {
+        try {
+            let result = await axios.post('/api/rejectPaper', {paperID: id});
+
+            if(result.status == 200) {
+                console.log('Success');
+            }
+        }catch(error) {
+            console.log(error);
+        }
+    }
+
+    const [bidderToAllocate, setBidderToAllocate] = useState(1)
+    const [open, setOpen] = useState(false);
+
     return (
         <>
             <SignedInConferenceNavbar></SignedInConferenceNavbar>
@@ -58,7 +87,27 @@ function ViewDataForPaperConference(props) {
                                 <Typography variant="p" color="#8192AA">{paper.description}</Typography>
                             </Box>
                             <Box sx={{display: "flex", justifyContent: "center"}}>
-                                {paper.status == "Not Allocated" && <Button width={400} variant="contained" color="secondary" onClick={() => allocatePaper(paper.id)}>Allocate Paper</Button>}
+                                {paper.status == "Not Allocated" && <>
+                                <FormControl color="secondary">
+                                    <InputLabel>Rating</InputLabel>
+                                    <Select id="user-type" value={bidderToAllocate}  sx={{borderColor: 'secondary'}} onChange={(event) => setBidderToAllocate(event.target.value)}>
+                                        {paper.Bids.map(bid => (<MenuItem value={bid.id}>{bid.reviewerEmail}</MenuItem>))}
+                                    </Select>
+                                </FormControl>
+                                <Button width={400} variant="contained" color="secondary" onClick={() => allocatePaper(paper.id)}>Allocate Paper</Button>
+                                </>}
+                                {paper.status == "Reviewed" &&
+                                <>
+                                    <Button width={400} variant="contained" color="secondary" onClick={() => acceptPaper(paper.id)}>Accept</Button>
+                                    <Button width={400} variant="contained" color="secondary" onClick={() => rejectPaper(paper.id)}>Reject</Button>
+                                    <Button width={400} variant="contained" color="secondary" onClick={() => setOpen(true)}>View Reviews</Button>
+                                    <Modal open={open} onClose={() => setOpen(false)} sx={{position: 'absolute', top: '10%', left: '10%', width: 1800, height: 500, bgcolor: "white"}}>
+                                        <Card>
+                                            <ViewReviews paperID={paper.id}></ViewReviews>
+                                        </Card>
+                                    </Modal>
+                                </>
+                                }
                             </Box>
                         </>
                     ))}

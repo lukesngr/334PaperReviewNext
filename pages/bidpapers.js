@@ -10,8 +10,8 @@ import { SignedInReviewNavbar } from "../components/navbar/SignedInReviewNavbar"
 function BidPapers(props) {
     
     let papers = [];
-    const inputProps = { 'underline': 'primary' };
-    const [numberOfPapers, setNumberOfPapers] = useState(2)
+    //const inputProps = { 'underline': 'primary' };
+    
     const { status: getStatus, error, data: papersData} = useQuery({
         queryKey: ['paperReviewers'],
         queryFn: () => {
@@ -26,7 +26,7 @@ function BidPapers(props) {
 
     async function bidForPaper(id) {
         try {
-            let result = await axios.post('/api/bidForPaper', {paper: {connect: {id: id}}, reviewerEmail: props.email, preferredNumber: numberOfPapers});
+            let result = await axios.post('/api/bidForPaper', {paper: {connect: {id: id}}, reviewerEmail: props.email});
 
             if(result.status == 200) {
                 console.log('Success');
@@ -42,7 +42,6 @@ function BidPapers(props) {
             <Box sx={{display: 'flex', justifyContent: 'center'}} >
                 <Card sx={{p: 5, my: 10}}>
                     <Typography variant="h5">Available Papers</Typography>
-                    <TextField InputProps={inputProps} sx={{width: 400, mb: 5}} label="Select Number Of Papers" variant="standard" value={numberOfPapers} onChange={e => setNumberOfPapers(e.value)}/>
                     <Stack direction="column">
                         {papers.map(paper => (
                             <Stack direction="row">
